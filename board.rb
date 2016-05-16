@@ -18,6 +18,9 @@ class Board
       end
     end
   end
+  def in_bounds?(pos)
+     pos.all? { |x| x.between?(0, 7) }
+   end
 
 
   def move(start, end_pos)
@@ -26,7 +29,7 @@ class Board
       p e
     rescue
       retry
-    end
+
   end
 
   def [](pos)
@@ -36,5 +39,8 @@ class Board
 
   def []=(pos, value)
     @grid[pos] = value
+  end
+  def rows
+    @grid
   end
 end
