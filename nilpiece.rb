@@ -3,6 +3,6 @@ class Nilpiece
   include Singleton
   attr_reader :color
   def to_s
-    return "   "
+    return "    "
   end
 end

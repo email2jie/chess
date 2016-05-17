@@ -12,7 +12,6 @@ class Game
     puts "WASD or arrow keys to move the cursor, enter or space to confirm."
     until false
 
-
       @display.render
       pos = @display.get_input
       # @board.mark(pos)

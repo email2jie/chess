@@ -41,7 +41,14 @@ module Cursorable
     when :ctrl_c
       exit 0
     when :return, :space
-      @cursor_pos
+      if !@selected
+        @selected = @cursor_pos if !@board[@cursor_pos].is_a?(Nilpiece)
+      else
+        @board.move(@selected, @cursor_pos)
+        @selected = nil
+      end
+        @cursor_pos
+
     when :left, :right, :up, :down
       update_pos(MOVES[key])
       nil
@@ -49,6 +56,7 @@ module Cursorable
       puts key
     end
   end
+
 
   def read_char
     STDIN.echo = false

@@ -1,6 +1,7 @@
-# require 'byebug'
+require 'byebug'
 class Pieces
-  attr_reader :position, :board, :color
+  attr_accessor :board
+  attr_reader :position, :color
   NEXT_DIAG_POS = [[1,1],
                    [1,-1],
                    [-1,1],
@@ -18,15 +19,18 @@ class Pieces
              [-1,-2],
              [-2,-1]]
 
-  def initialize(color=nil, position=nil, board=nil)
+  def initialize(color=nil, board=nil, position=nil)
     @color = color
     @position = position
     @board = board
   end
 
+  def position=(arr)
+    @position = arr
+  end
+
   def moves(direction)
-      valid = valid_moves(direction)
-      valid
+    valid_moves(direction)
   end
 
   def check_step_pos(arr)
@@ -53,10 +57,13 @@ class Pieces
     arr.each do |pos|
       x_dif,y_dif = pos
       x,y = @position
-        until !valid_range([x,y])
+
+        loop do
           x += x_dif
           y += y_dif
           pos = [x,y]
+          break unless valid_range(pos)
+          # byebug if x_dif ==1 && y_dif ==1
           if blocking?(pos) && @board[pos].color != self.color
             result << pos
           end
@@ -64,12 +71,13 @@ class Pieces
           result << pos
         end
       end
+      p result
     result
   end
 
   def valid_range(pos)
     x,y = pos
-    (1...7).include?(x) && (1...7).include?(y)
+    (0..7).include?(x) && (0..7).include?(y)
   end
 
   def valid_moves(direction)
@@ -117,7 +125,7 @@ class Bishop < Sliding_pieces
     super("diagonal")
   end
   def to_s
-    " B "
+    " \u2657  "
   end
 end
 
@@ -126,7 +134,7 @@ class Rook < Sliding_pieces
     super("hv")
   end
   def to_s
-    " R "
+    " \u2656  "
   end
 end
 
@@ -135,7 +143,7 @@ class Queen < Sliding_pieces
     super("both")
   end
   def to_s
-    " Q "
+    " \u2655  "
   end
 
 end
@@ -145,7 +153,7 @@ class King < Stepping_pieces
     super("king")
   end
   def to_s
-    " K "
+    " \u2654  "
   end
 end
 
@@ -154,6 +162,6 @@ class Knight < Stepping_pieces
     super("knight")
   end
   def to_s
-    " N "
+    " \u2658  "
   end
 end

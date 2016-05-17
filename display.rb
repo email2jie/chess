@@ -9,6 +9,7 @@ class Display
   def initialize(board)
     @board = board
     @cursor_pos = [0,0]
+    @selected = false
 
   end
   def build_grid
@@ -21,7 +22,7 @@ def build_row(row, i)
   row.map.with_index do |piece, j|
     color_options = colors_for(i, j, piece)
     # byebug
-    piece.to_s.colorize(color_options)
+    piece.to_s.encode('utf-8').colorize(color_options)
   end
 end
 
@@ -37,9 +38,10 @@ def colors_for(i, j, piece)
 end
 
 def render
-  system("clear")
+  # system("clear")
   puts "Fill the grid!"
   puts "Arrow keys, WASD, or vim to move, space or enter to confirm."
+  p @cursor_pos
   build_grid.each { |row| puts row.join }
 end
 end
