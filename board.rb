@@ -8,30 +8,31 @@ class Board
 
   end
 
-  def not_pawns
-    @arr << Rook.new
-    @arr << Knight.new
-    @arr << Bishop.new
-    @arr << Queen.new
-    @arr << King.new
-    @arr << Bishop.new
-    @arr << Knight.new
-    @arr << Rook.new
+  def not_pawns(color)
+    @arr << Rook.new(color)
+    @arr << Knight.new(color)
+    @arr << Bishop.new(color)
+    @arr << Queen.new(color)
+    @arr << King.new(color)
+    @arr << Bishop.new(color)
+    @arr << Knight.new(color)
+    @arr << Rook.new(color)
 
   end
 
   def empty_grid
-      @arr = []
-    not_pawns
-    not_pawns
+    @arr = []
+    not_pawns(:black)
+    not_pawns(:white)
     nilpiece = Nilpiece.instance
     grid = Array.new(8) { Array.new(8) }
-    grid.each_with_index do |row, idy|
-      row.each_with_index do |el, idx|
-        if idy < 1 || idy > 6
-          grid[idy][idx] = @arr.shift
+    grid.each_with_index do |row, idx|
+      row.each_with_index do |el, idy|
+        if idx < 1 || idx > 6
+          grid[idx][idy] = @arr.shift
+          grid[idx][idy].position = [idx,idy]
         else
-          grid[idy][idx] = nilpiece
+          grid[idx][idy] = nilpiece
         end
       end
     end

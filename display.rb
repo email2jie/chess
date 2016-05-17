@@ -19,21 +19,21 @@ end
 
 def build_row(row, i)
   row.map.with_index do |piece, j|
-    color_options = colors_for(i, j)
+    color_options = colors_for(i, j, piece)
     # byebug
     piece.to_s.colorize(color_options)
   end
 end
 
-def colors_for(i, j)
+def colors_for(i, j, piece)
   if [i, j] == @cursor_pos
     bg = :light_red
   elsif (i + j).odd?
-    bg = :black
+    bg = :blue
   else
     bg = :light_blue
   end
-  { background: bg, color: :white }
+  { background: bg, color: piece.color }
 end
 
 def render

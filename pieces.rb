@@ -9,8 +9,17 @@ class Pieces
                  [-1,0],
                  [0,1],
                  [0,-1]]
+  NEXT_KNIGHT_POS = [[-2,1],
+             [-1,2],
+             [1,2],
+             [2,1],
+             [2,-1],
+             [1,-2],
+             [-1,-2],
+             [-2,-1]]
 
-  def initialize(position=nil, board=nil)
+  def initialize(color=nil, position=nil, board=nil)
+    @color = color
     @position = position
     @board = board
   end
@@ -18,6 +27,25 @@ class Pieces
   def moves(direction)
       valid = valid_moves(direction)
       valid
+  end
+
+  def check_step_pos(arr)
+    result = []
+    arr.each do |pos|
+      x_dif,y_dif = pos
+      x,y = @position
+
+          x += x_dif
+          y += y_dif
+          pos = [x,y]
+          if blocking?(pos) && @board[pos].color != self.color
+            result << pos
+          end
+
+          result << pos if valid_range(pos)
+
+      end
+    result
   end
 
   def check_pos(arr)
@@ -30,10 +58,10 @@ class Pieces
           y += y_dif
           pos = [x,y]
           if blocking?(pos) && @board[pos].color != self.color
-            result << [x,y]
+            result << pos
           end
           break if blocking?(pos)
-          result << [x,y]
+          result << pos
         end
       end
     result
@@ -52,6 +80,10 @@ class Pieces
       moves = check_pos(NEXT_HV_POS)
     when "both"
       moves = check_pos(NEXT_DIAG_POS) + check_pos(NEXT_HV_POS)
+    when "knight"
+      moves = check_step_pos(NEXT_KNIGHT_POS)
+    when "king"
+      moves = check_step_pos(NEXT_DIAG_POS) + check_step_pos(NEXT_HV_POS)
     end
     moves
 
@@ -59,14 +91,12 @@ class Pieces
 
   def blocking?(pos)
     # pos = [x,y]
-    !@board[pos].nil?
+    !@board[pos].is_a?(Nilpiece)
   end
 
 end
 
 class Sliding_pieces < Pieces
-
-
   def moves(direction)
       super(direction)
   end
@@ -98,7 +128,6 @@ class Rook < Sliding_pieces
   def to_s
     " R "
   end
-
 end
 
 class Queen < Sliding_pieces
@@ -112,12 +141,18 @@ class Queen < Sliding_pieces
 end
 
 class King < Stepping_pieces
+  def moves
+    super("king")
+  end
   def to_s
     " K "
   end
 end
 
 class Knight < Stepping_pieces
+  def moves
+    super("knight")
+  end
   def to_s
     " N "
   end
