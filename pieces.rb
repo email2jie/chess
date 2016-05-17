@@ -1,3 +1,4 @@
+require 'byebug'
 class Pieces
   attr_reader :position, :board, :color
   NEXT_DIAG_POS = [[1,1],
@@ -23,44 +24,25 @@ class Pieces
     result = []
     arr.each do |pos|
       x,y = @position
-      pos.each do |x_dif, y_dif|
-        until blocking?(x,y) || !valid_range([x,y])
-          pos = [x,y]
-          break if @board[pos]
+      x_dif,y_dif = pos
+        until !valid_range([x,y]) # || blocking?(x,y)  
+    #        byebug
+          #break if @board[pos]
           x += x_dif
           y += y_dif
           result << [x,y]
           pos = [x,y]
-          if blocking?(x,y) && @board[pos].color != self.color
-            result << [x,y]
-          end
+         # if blocking?(x,y) && @board[pos].color != self.color
+         #   result << [x,y]
+         # end
         end
       end
-    end
     result
   end
-  #
-  # def check_diagonals
-  #   diagonal = []
-  #   NEXT_DIAG_POS.each do |pos|
-  #     x,y = @position
-  #     pos.each do |x_dif, y_dif|
-  #       until blocking?(x,y) || !valid_range([x,y])
-  #         x += x_dif
-  #         y += y_dif
-  #         diagonal << [x,y]
-  #         if blocking?(x,y) && @board[[x,y]].color != self.color
-  #           diagonal << [x,y]
-  #         end
-  #       end
-  #     end
-  #   end
-  #   diagonal
-  # end
-
+  
   def valid_range(pos)
     x,y = pos
-    (0...8).include?(x) && (0...8).include?(y)
+    (1...7).include?(x) && (1...7).include?(y)
   end
 
   def valid_moves(direction)
