@@ -17,6 +17,7 @@ class Board
         end
       end
     end
+    # grid[4][4] = Bishop.new()
   end
   def in_bounds?(pos)
      pos.all? { |x| x.between?(0, 7) }
