@@ -1,4 +1,4 @@
-require 'byebug'
+# require 'byebug'
 class Pieces
   attr_reader :position, :board, :color
   NEXT_DIAG_POS = [[1,1],
@@ -23,23 +23,22 @@ class Pieces
   def check_pos(arr)
     result = []
     arr.each do |pos|
-      x,y = @position
       x_dif,y_dif = pos
-        until !valid_range([x,y]) # || blocking?(x,y)  
-    #        byebug
-          #break if @board[pos]
+      x,y = @position
+        until !valid_range([x,y])
           x += x_dif
           y += y_dif
-          result << [x,y]
           pos = [x,y]
-         # if blocking?(x,y) && @board[pos].color != self.color
-         #   result << [x,y]
-         # end
+          if blocking?(pos) && @board[pos].color != self.color
+            result << [x,y]
+          end
+          break if blocking?(pos)
+          result << [x,y]
         end
       end
     result
   end
-  
+
   def valid_range(pos)
     x,y = pos
     (1...7).include?(x) && (1...7).include?(y)
@@ -58,8 +57,8 @@ class Pieces
 
   end
 
-  def blocking?(x,y)
-    pos = [x,y]
+  def blocking?(pos)
+    # pos = [x,y]
     !@board[pos].nil?
   end
 
@@ -84,25 +83,42 @@ class NullPiece < Pieces
 end
 
 class Bishop < Sliding_pieces
-  def move_dirs
-    direction = "diagonal"
-    moves = moves(direction)
-    moves
+  def moves
+    super("diagonal")
+  end
+  def to_s
+    " B "
   end
 end
 
 class Rook < Sliding_pieces
-  def move_dirs
+  def moves
+    super("hv")
+  end
+  def to_s
+    " R "
   end
 
 end
 
 class Queen < Sliding_pieces
+  def moves
+    super("both")
+  end
+  def to_s
+    " Q "
+  end
 
 end
 
 class King < Stepping_pieces
+  def to_s
+    " K "
+  end
 end
 
 class Knight < Stepping_pieces
+  def to_s
+    " N "
+  end
 end

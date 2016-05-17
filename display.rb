@@ -1,5 +1,6 @@
-#require "colorize"
+require "colorize"
 require_relative 'cursorable'
+# require 'byebug'
 
 class Display
   include Cursorable
@@ -19,6 +20,7 @@ end
 def build_row(row, i)
   row.map.with_index do |piece, j|
     color_options = colors_for(i, j)
+    # byebug
     piece.to_s.colorize(color_options)
   end
 end
@@ -27,9 +29,9 @@ def colors_for(i, j)
   if [i, j] == @cursor_pos
     bg = :light_red
   elsif (i + j).odd?
-    bg = :light_blue
+    bg = :black
   else
-    bg = :blue
+    bg = :light_blue
   end
   { background: bg, color: :white }
 end
