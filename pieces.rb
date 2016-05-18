@@ -1,4 +1,5 @@
 require 'byebug'
+require_relative 'board'
 class Pieces
   attr_accessor :board
   attr_reader :position, :color
@@ -39,16 +40,12 @@ class Pieces
       x_dif,y_dif = pos
       x,y = @position
 
-          x += x_dif
-          y += y_dif
-          pos = [x,y]
-          if blocking?(pos) && @board[pos].color != self.color
-            result << pos
-          end
+      x += x_dif
+      y += y_dif
+      pos = [x,y]
 
-          result << pos if valid_range(pos)
-
-      end
+      result << pos if valid_range(pos) && @board[pos].color != self.color
+    end
     result
   end
 
@@ -62,6 +59,7 @@ class Pieces
           x += x_dif
           y += y_dif
           pos = [x,y]
+
           break unless valid_range(pos)
           # byebug if x_dif ==1 && y_dif ==1
           if blocking?(pos) && @board[pos].color != self.color
@@ -71,7 +69,6 @@ class Pieces
           result << pos
         end
       end
-      p result
     result
   end
 
@@ -93,8 +90,33 @@ class Pieces
     when "king"
       moves = check_step_pos(NEXT_DIAG_POS) + check_step_pos(NEXT_HV_POS)
     end
-    moves
 
+    moves = move_into_check?(moves)
+    moves
+  end
+
+  def move_into_check?(moves)
+    new_valid_moves = []
+    moves.each do |pos|
+      new_board = deep_dup
+      new_board.move(self.position, pos)
+      unless in_check?(self.color)
+        new_valid_moves << pos
+      end
+    end
+    new_valid_moves
+  end
+
+  def deep_dup
+    new_board = Board.new(@board.grid)
+    new_board.grid.each do |row|
+      row.each do |el|
+        next if el.is_a?(Nilpiece)
+        el.class.new(el.color, new_board, el.position)
+        # el.board = new_board unless el.is_a?(Nilpiece)
+      end
+    end
+    new_board
   end
 
   def blocking?(pos)
